@@ -1,0 +1,103 @@
+{
+  "main": {
+    "id": "80478a3ab502615c",
+    "type": "split",
+    "children": [
+      {
+        "id": "d207bf6bfcada1ee",
+        "type": "leaf",
+        "state": {
+          "type": "markdown",
+          "state": {
+            "file": "Web/JavaScript/JSDoc.md",
+            "mode": "source",
+            "source": false
+          }
+        }
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "5ffcb4c9290cc3c5",
+    "type": "split",
+    "children": [
+      {
+        "id": "b41907e27ac542ec",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "39723ed44a50e55f",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {}
+            }
+          },
+          {
+            "id": "ae798a214410aa33",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "150b2994c2934ac2",
+    "type": "split",
+    "children": [
+      {
+        "id": "5afae60a7a023666",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "bc7a4710ca56c3a6",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "Web/JavaScript/JSDoc.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "active": "d207bf6bfcada1ee",
+  "lastOpenFiles": [
+    "Web/JavaScript/JSDoc.md",
+    "Web/JavaScript/bind this.md",
+    "Web/JavaScript/HTML5 API.md",
+    "Web/CSS/vw and vh.md",
+    "Web/CSS/Flexbox layout.md",
+    "Web/html.md",
+    "Web/Http协议.md",
+    "UnrealEngine/Set up UnrealEngine source code on mac.md",
+    "Windows Terminal/power shell配置oh my posh.md",
+    "Windows Terminal/ubuntu_bg.jpg"
+  ]
+}
