@@ -9,7 +9,7 @@
         "state": {
           "type": "markdown",
           "state": {
-            "file": "UnrealEngine/Customize UBT TaskNode.md",
+            "file": "UnrealEngine/Gameplay Ability System Overview.md",
             "mode": "source",
             "source": false
           }
@@ -69,7 +69,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "UnrealEngine/Customize UBT TaskNode.md",
+                "file": "UnrealEngine/Gameplay Ability System Overview.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -89,15 +89,15 @@
   },
   "active": "0b805f1f3fe150ab",
   "lastOpenFiles": [
-    "UnrealEngine/Customize UBT TaskNode.md",
+    "UnrealEngine/Gameplay Ability System Overview.md",
+    "UnrealEngine/GAS AttributeSet.md",
     "UnrealEngine/Set up UnrealEngine source code on mac.md",
+    "UnrealEngine/Customize UBT TaskNode.md",
     "UnrealEngine/AIController.md",
+    "UnrealEngine/Gameplay Ability System Basic.md",
     "VSCode/CommonVSCodeSettings.md",
     "VSCode/Multi-root Workspace.md",
     "VSCode/PythonVSCode.md",
-    "Web/html.md",
-    "Web/JavaScript/JSDoc.md",
-    "Web/JavaScript/bind this.md",
-    "Web/JavaScript/HTML5 API.md"
+    "Web/html.md"
   ]
 }
