@@ -1,0 +1,1 @@
+An Obsidian vault.
