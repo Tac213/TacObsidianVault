@@ -2,5 +2,8 @@
   "legacyEditor": false,
   "livePreview": true,
   "vimMode": true,
-  "useTab": false
+  "useTab": false,
+  "lineWrap": true,
+  "showLineNumber": true,
+  "strictLineBreaks": true
 }
