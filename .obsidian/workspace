@@ -9,7 +9,7 @@
         "state": {
           "type": "markdown",
           "state": {
-            "file": "Web/JavaScript/JSDoc.md",
+            "file": "VSCode/Multi-root Workspace.md",
             "mode": "source",
             "source": false
           }
@@ -53,7 +53,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300
+    "width": 299
   },
   "right": {
     "id": "150b2994c2934ac2",
@@ -69,7 +69,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Web/JavaScript/JSDoc.md",
+                "file": "VSCode/Multi-root Workspace.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -89,15 +89,15 @@
   },
   "active": "d207bf6bfcada1ee",
   "lastOpenFiles": [
+    "VSCode/Multi-root Workspace.md",
+    "VSCode/CommonVSCodeSettings.md",
+    "VSCode/PythonVSCode.md",
+    "Web/html.md",
     "Web/JavaScript/JSDoc.md",
     "Web/JavaScript/bind this.md",
     "Web/JavaScript/HTML5 API.md",
     "Web/CSS/vw and vh.md",
     "Web/CSS/Flexbox layout.md",
-    "Web/html.md",
-    "Web/Http协议.md",
-    "UnrealEngine/Set up UnrealEngine source code on mac.md",
-    "Windows Terminal/power shell配置oh my posh.md",
-    "Windows Terminal/ubuntu_bg.jpg"
+    "Web/Http协议.md"
   ]
 }
