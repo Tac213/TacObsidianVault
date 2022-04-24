@@ -1,5 +1,34 @@
 [参考文档](https://github.com/tranek/GASDocumentation)
 
+## 模块依赖
+
+如果需要使用GAS，需要现在项目插件里启用GAS插件，也可以直接加到uproject里面：
+
+```json
+{
+    "Plugins": [
+        {
+            "Name": "GameplayAbilities",
+            "Enabled": true
+        }
+    ]
+}
+```
+
+然后在需要依赖GAS的模块的Module.Build.cs里面加上这4个模块：
+
+```cs
+PrivateDependencyModuleNames.AddRange(
+    new string[]
+    {
+        "GameplayAbilities",
+        "GameplayTags",
+        "GameplayTasks",
+        "NetCore"  // 如果在mac上编译必须加上这个, 否则会编译失败, 找不到FGuidReference
+    }
+);
+```
+
 ## 接入Gameplay Ability System
 
 首先要在项目里启用GameplayAbilitySystem插件，在插件面板里可以完成。
