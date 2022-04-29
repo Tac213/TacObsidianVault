@@ -141,3 +141,80 @@ renderContext.fillStyle = this.visible ? 'lightblue' : 'transparent';
 renderContext.fill();
 renderContext.closePath();
 ```
+
+## VideoElement
+
+VideoElement用于处理视频。需要像下面这样定义一个video:
+
+```html
+<video src="video/gone.mp4" id="video" poster="image/poster.png" class="screen"></video>
+```
+
+poster属性为视频初始化未播放时显示的图片。
+
+video标签的element的类型为`HTMLVideoElement`。
+
+### 可监听事件
+
+- click: 视频点击
+- timeupdate: 视频播放过程中时间更新，可用于更新进度条、显示时间戳之类的
+- play: 播放事件
+- pause: 暂停事件
+
+```js
+this.video.addEventListener('click', this.toggleVideoStatus.bind(this));
+this.video.addEventListener('timeupdate', this.updateProgress.bind(this));
+this.video.addEventListener('play', this.togglePlayIcon.bind(this));
+this.video.addEventListener('pause', this.togglePlayIcon.bind(this));
+```
+
+### 视频相关操作
+
+比较简单，直接看代码就行了：
+
+```js
+    /**
+     * toggle video status
+     * @param {PointerEvent} event
+     * @returns {void}
+     */
+    toggleVideoStatus(event)
+    {
+        this.isStopped = false;
+        if (this.video.paused)
+        {
+            this.video.play();
+        }
+        else
+        {
+            this.video.pause();
+        }
+    }
+
+    /**
+     * stop video
+     * @param {PointerEvent} event 
+     * @returns {void}
+     */
+    stopVideo(event)
+    {
+        this.video.currentTime = 0;
+        this.video.pause();
+        this.isStopped = true;
+    }
+
+
+    /**
+     * setVideoProgress
+     * @param {Event} event 
+     */
+    setVideoProgress(event)
+    {
+        if (this.isStopped)
+        {
+            this.progress.value = 0;
+            return;
+        }
+        this.video.currentTime = this.progress.value * this.video.duration / 100;
+    }
+```
