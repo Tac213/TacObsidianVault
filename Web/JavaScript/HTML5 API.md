@@ -218,3 +218,44 @@ this.video.addEventListener('pause', this.togglePlayIcon.bind(this));
         this.video.currentTime = this.progress.value * this.video.duration / 100;
     }
 ```
+
+## 动态创建Element
+
+```js
+/** @type {HTMLDivElement} */
+divElement = document.createElement('div');
+/** add element to parent */
+parentElement.appendChild(divElement);
+
+/** write html code here */
+divElement.innerHTML = 'some html code';
+```
+
+## 发起http请求
+
+```js
+async function fetchRandomUser()
+{
+    /**@type {Response} */
+    let res = await fetch('https://randomuser.me/api');
+    // for more infomation, visit: https://randomuser.me
+    let userData = await res.json();
+}
+```
+
+## Window.localStorage
+
+[mdn web docs](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage)
+
+是一个Storage对象，可以保存窗口的本地信息，用下面的方法可以写入数据：
+
+```js
+localStorage.setItem('transactions', JSON.stringify(this.transactions));
+```
+
+用下面的方法可以读取数据：
+
+```js
+let localStorageTransaction = localStorage.getItem('transactions');
+let transactions = localStorageTransaction !== null ? JSON.parse(localStorageTransaction) : [];
+```

@@ -6,5 +6,9 @@
   "lineWrap": true,
   "showLineNumber": true,
   "strictLineBreaks": true,
-  "attachmentFolderPath": "Images"
+  "attachmentFolderPath": "Images",
+  "spellcheckLanguages": [
+    "en-US"
+  ],
+  "readableLineLength": true
 }
