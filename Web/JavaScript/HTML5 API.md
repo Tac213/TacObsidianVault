@@ -231,6 +231,20 @@ parentElement.appendChild(divElement);
 divElement.innerHTML = 'some html code';
 ```
 
+## innerHTML
+
+Element上都有innerHTML属性，使用innerHTML属性，可以在运行时动态改变dom，比如：
+
+```js
+postElement.innerHTML = `
+    <div class="number">${this.postCount}</div>
+    <div class="post-info">
+        <h2 class="post-title">${post.title}</h2>
+        <p class="post-body">${post.body}</p>
+    </div>
+`;
+```
+
 ## 发起http请求
 
 ```js
@@ -258,4 +272,34 @@ localStorage.setItem('transactions', JSON.stringify(this.transactions));
 ```js
 let localStorageTransaction = localStorage.getItem('transactions');
 let transactions = localStorageTransaction !== null ? JSON.parse(localStorageTransaction) : [];
+```
+
+## Element.querySelector / Element.querySelectorAll
+
+以css选择器的语法，选择一个子Element。
+
+querySelector返回首个满足selector语法的Element:
+
+```js
+/** @type {HTMLElement} */
+let subelement = element.querySelector('div');
+```
+
+querySelectorAll返回所有满足selector语法的Element array:
+
+```js
+/** @type {Array<HTMLElement>} */
+let subelements = element.querySelector('.custom-class');
+```
+
+## 监听页面滚动到底部
+
+```js
+window.addEventListener('scroll', () => {
+    const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+
+    if (scrollHeight - scrollTop === clientHeight) {
+        // do something
+    }
+});
 ```
