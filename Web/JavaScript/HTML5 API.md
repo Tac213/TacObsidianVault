@@ -257,6 +257,21 @@ async function fetchRandomUser()
 }
 ```
 
+如果要给协议报文增加Header信息，可以填充第二个参数，比如：
+
+```js
+async function getMoreSongs(url) {
+    const res = await fetch(`https://cors-anywhere.herokuapp.com/${url}`, {
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+        },
+    });
+    const songDatas = res.json();
+}
+```
+
+其他Headers定义方法[参考](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch#headers)
+
 ## Window.localStorage
 
 [mdn web docs](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage)
@@ -272,6 +287,11 @@ localStorage.setItem('transactions', JSON.stringify(this.transactions));
 ```js
 let localStorageTransaction = localStorage.getItem('transactions');
 let transactions = localStorageTransaction !== null ? JSON.parse(localStorageTransaction) : [];
+```
+
+用下面的方法可以清除数据：
+```js
+localStorage.clear()
 ```
 
 ## Element.querySelector / Element.querySelectorAll
@@ -302,4 +322,88 @@ window.addEventListener('scroll', () => {
         // do something
     }
 });
+```
+
+## HTMLElement.tagName
+
+通过这个属性可以判断element的类型，比如在点击事件回调里，判断被点击的是按钮：
+
+```js
+/**
+ * @param {PointerEvent} event
+ */
+function onClickResult(event) {
+    /** @type {HTMLElement} */
+    // @ts-ignore
+    const eventTarget = event.target;
+    if (eventTarget.tagName === 'BUTTON') {
+        // do something
+    }
+}
+```
+
+HTMLElement.getAttribute
+
+通过这个函数可以获得element的一些自定义属性，比如element是这样定义的：
+
+```html
+<button class="btn" data-artist="A" data-songtitle="a">Get Lyrics</button>
+```
+
+那么可以通过下面的方法拿到html标签上的属性：
+
+```js
+const artistName = element.getAttribute('data-artist');
+const songTitle = element.getAttribute('data-songtitle');
+```
+
+## event.composedPath
+
+这个函数可以拿到事件发生时，从上到下与事件相关的所有element。比如点击事件，调这个函数可以拿到鼠标点从上到下的所有element，接着就可以对这个Array做操作，比如调用Array的find拿到目标element:
+
+```js
+/**
+ * @param {PointerEvent} event
+ */
+function onClickMeal(event) {
+    /** @type {HTMLElement} */
+    // @ts-ignore
+    const mealInfo = event.composedPath().find((item) => {
+        // @ts-ignore
+        if (item.classList) return item.classList.contains('meal-info');
+        return false;
+    });
+    if (!mealInfo) return;
+}
+```
+
+## document.location.reload
+
+可以直接reload当前document
+
+```js
+document.location.reload()
+```
+
+## element.classList / element.className
+
+这些属性可以直接操作element的class属性
+
+通过直接设置`className`，可以类似HTML那样直接改变class属性的值，比如：
+
+```js
+element.className = 'card active';
+```
+
+而通过classList则可以增减class:
+
+```js
+element.classList.remove('a');
+element.classList.add('b');
+```
+
+还可以通过toggle来根据当前状态增加或者减少：
+
+```js
+element.classList.toggle('c');
 ```
