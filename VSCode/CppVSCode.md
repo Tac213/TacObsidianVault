@@ -223,6 +223,8 @@ int foo() {}
 
 在int函数没有返回值时gcc默认返回了0，这种隐含的规则会带来很多问题，出了bug也很难找。既然苹果选择了clang，那不如就跟随大佬的脚步。
 
+以下笔记已过时，可参考[[CMakeClangVSCode]] [CMakeClangVSCode](CMakeClangVSCode.md)
+
 ### 各平台clang环境搭建
 
 #### osx
@@ -369,7 +371,7 @@ vscode官方的插件并不支持使用lldb进行调试，所以如果要调试�
 
 #### 使用lldb debug
 
-> windows平台至今未成功过...
+> 14.0.0版本以上的clang在windows平台至今未成功过...如果需要在windows使用最高只能到13.0.0版本
 
 如果使用微软的c/cpp拓展，需要自行编译[lldb-mi](https://github.com/lldb-tools/lldb-mi)，然后将`miDebuggerPath`配置为编译出来的lldb-mi.exe的路径。也有个[官方文档](https://code.visualstudio.com/docs/cpp/lldb-mi)可以参考，不过至今没有成功过...
 
@@ -393,4 +395,4 @@ vscode官方的插件并不支持使用lldb进行调试，所以如果要调试�
 }
 ```
 
-不过这个方法在windows上面断点无法命中，原因未知...
+不过这个方法在windows上面断点无法命中，原因是[vadimcn.vscode-lldb](https://github.com/vadimcn/vscode-lldb)的当前最新版本1.7.0不支持14.0.0以上版本的clang调试，如果需要在windows使用最高只能到[13.0.0版本](https://github.com/brechtsanders/winlibs_mingw/releases/download/11.2.0-9.0.0-ucrt-r3/winlibs-x86_64-posix-seh-gcc-11.2.0-llvm-13.0.0-mingw-w64ucrt-9.0.0-r3.7z)。
