@@ -172,6 +172,7 @@ def _gcd_import(name, package=None, level=0) -> types.ModuleType:
 `cache_from_source(path)`: 返回py源码文件路径对应的pyc文件路径
 `source_from_cache(path)`: 返回pyc文件路径所对应的py源码文件路径
 `spec_from_file_location(name, location=None, *, loader=None, submodule_search_locations=_POPULATE)`: 根据py文件路径得到对应的ModuleSpec对象
+`decode_source(bytes_source)`: 传入bytes类型的源代码，decode为str类型，bytes类型的源代码可以通过`io.open_code(file_path)`或者`open(file_path, 'rb')`得到
 `SourceFileLoader(name, path)`: 可以加载`SOURCE_SUFFIXES`的Loader类
 `SourcelessFileLoader(name, path)`: 可以加载`BYTECODE_SUFFIXES`的Loader类
 `ExtensionFileLoader(name, path)`: 可以加载`SOURCE_SUFFIXES`的Loader类
@@ -182,7 +183,7 @@ def _gcd_import(name, package=None, level=0) -> types.ModuleType:
 ```python
 from importlib.machinery import ModuleSpec, BuiltinImporter, FrozenImporter, PathFinder, FileFinder, SourceFilerLoader, SourcelessFileLoader, ExtensionFileLoader, SOURCE_SUFFIXES, BYTECODE_SUFFIXES, EXTENSION_SUFFIXES, all_suffixes
 
-from importlib.util import module_from_spec, spec_from_loader, spec_from_file_location
+from importlib.util import module_from_spec, spec_from_loader, spec_from_file_location, decode_source
 ```
 
 ## `sys.meta_path`
@@ -440,10 +441,209 @@ class MyModuleLoader(abc.Loader):
 - pyc文件Loader: SourcelessFileLoader
 - pyd文件Loader: ExtensionFileLoader
 
+这3个loader的基类实现了一些必要函数，例如：
+
+- `exec_module(self, spec)`: 调用`get_code`函数拿到module的code对象，调用exec将code内容写入module的变量命名空间(调用方法为`exec(code, module.__dict__)`)
+- `is_package(self, fullname)`: 根据模块的绝对路径尾部是否带有__init__来判断模块是不是package
+- `get_filename(self, fullname)`: 返回模块的绝对路径
+- `path_stats(self, path)`: 返回字典`{'mtime': stats_mtime, 'size': stats_size}`
+- `get_data(self, path)`: 返回文件中的bytes数据
+- `set_data(self, path, data)`: 将某些数据写入某个文件中
+- `get_source(self, fullname)`: 调用get_data得到bytes数据，然后将bytes数据传入到`decode_source`中得到bytes对应的string代码
+- `source_to_code(self, data, path)`: 将bytes源码编译为code对象(调用方法为`compile(bytes_data, path, 'exec', dont_inherit=True, optimize=-1)`)
+- `get_code(self, fullname)`: 核心函数，获取模块的code对象
+
+其中py和pyd文件都是通过`io.open_code(path)`来拿到bytes数据的，`io.open_code(path)`等效于`open(path, 'rb')`，而pyc文件是通过`io.FileIO(path, 'r')`来拿bytes数据的。
+
 下面分别看下这3个Loader的实现。
 
 ### SourceFileLoader
 
+这个loader没有override exec_module，所以在get_code函数中实现了所有加载逻辑。
+
+如果熟悉Python都会直到，源py会被cache到pyc文件中，所以要了解这个Loader，需要先了解pyc中存储的字节数据。
+
+#### pyc中的字节数据
+
+pyc中存储的是字节码，前16个字节是pyc文件的header，后面的所有字节才是源文件中的所有信息。
+
+源文件的所有信息是通过下面这种方式得到的：
+
+```python
+import io
+import marshal
+
+with io.open_code(source_py_file_path) as py_src_file:
+    source_bytes = py_src_file.read()
+
+source_code = compile(source_bytes, source_py_file_path, 'exec', dont_inherit=True, optimize=-1)
+return marshal.dumps(code)
+```
+
+存在2种pyc文件，一种是带有源文件hash信息的pyc文件，另一种是带有源文件时间戳的pyc文件。
+
+带有源文件hash信息的pyc文件的意义是限定了：在使用pyc时，这个pyc文件必须时被当前源py文件编译出来的才能用这个pyc。
+
+带有源文件hash信息的pyc文件是这样dump的:
+
+```python
+def _code_to_hash_pyc(code, source_hash, checked=True):
+    "Produce the data for a hash-based pyc."
+    data = bytearray(MAGIC_NUMBER)
+    flags = 0b1 | checked << 1
+    data.extend(_pack_uint32(flags))
+    assert len(source_hash) == 8
+    data.extend(source_hash)
+    data.extend(marshal.dumps(code))
+    return data
+```
+
+由此可见，前16字节header信息为：
+
+- 1 - 4字节：MAGIC_NUMBER，每个Python版本都有一个MAGIC_NUMBER，可以通过`sys.modules['importlib._bootstrap_external'].MAGIC_NUMBER`这个表达式获取，通过`(3429).to_bytes(2, 'little') + b'\r\n'`这种方式定义，对于3.x.y版本的Python，如果x相同，则MAGIC_NUMBER是相同的，pyc文件互通，否则不行；
+- 4 - 8字节: 是一个flags标签，在解析文件的时候用到；
+- 9 - 16字节: 源文件的哈希值
+
+flags标签目前只有2位有效信息，第一位表示是否使用hash信息的pyc，第二位表示是否check_source。在读取pyc数据时，如果4 - 8位的信息超过2位（第3位开始有存在不是0的位），就会转而使用时间戳pyc。
+
+其中源文件的哈希值是通过下面这种方式得到的：
+
+```python
+import _imp
+import io
+
+with io.open_code(source_py_file_path) as py_src_file:
+    source_bytes = py_src_file.read()
+
+_imp.source_hash(source_bytes)
+```
+
+带有时间戳信息的pyc文件是这样dump的：
+
+```python
+def _code_to_timestamp_pyc(code, mtime=0, source_size=0):
+    "Produce the data for a timestamp-based pyc."
+    data = bytearray(MAGIC_NUMBER)
+    data.extend(_pack_uint32(0))
+    data.extend(_pack_uint32(mtime))
+    data.extend(_pack_uint32(source_size))
+    data.extend(marshal.dumps(code))
+    return data
+```
+
+由此可见，前16字节header信息为：
+
+- 1 - 4字节：MAGIC_NUMBER
+- 4 - 8字节：flags全是0
+- 9 - 12字节：源文件时间戳
+- 13 - 16字节：源文件大小
+
+那么什么时候使用带有源文件hash信息的pyc文件，什么时候使用时间戳的pyc文件呢？`_imp`模块有一个`_imp.check_hash_based_pycs`，其值是一个string，有default / never / always 3种值，默认是default。always就会一直使用源文件hash信息的pyc，never就会一直使用时间戳的pyc文件，default的话，如果第2字节的第3位开始有存在不是0的位，就会使用时间戳pyc，否则就会根据pyc文件第2个字节第2位的数据的值，如果第2个字节第2位是1，则也会使用hash信息的pyc文件，去检测这个pyc文件是否为当前源文件编译出来的py文件。
+
+不过在python3.10的`importlib._bootstrap_external`模块中，SourceFileLoader的get_code函数局部变量hash_based被设为了True，也就是说目前暂时都不会用到hash_based_pycs。
+
+#### 源py文件load流程
+
+首先调用`cache_from_source`拿到pyc文件的路径。
+
+接着，调用`get_data`获取pyc文件中的字节数据。
+
+如果没有pyc文件数据，即文件不存在，则调用`get_data`获取py文件种的字节数据，然后调用`source_to_code`得到code对象，如果`sys.dont_write_bytecode`不是True的话，就会调用`_code_to_xxx_pyc`得到pyc的字节数据，调用`set_data`将pyc字节数据写入。写入pyc的bytes数据时，是`_write_atomic`函数通过`io.FileIO(path, 'wb')`来写入的。
+
+如果有pyc数据，即文件存在，则根据pyc文件类型调用`_validate_xxx_pyc`函数检测当前pyc是否有效(比如时间戳pyc就是pyc时间戳和py时间戳不相等就invalid)，如果无效pyc就走没有pyc的流程，如果pyc有效就调`_complie_bytecode`得到字节码对应的code对象。
+
+字节码对应的code对象是通过下面这种方法得到的：
+
+```python
+import marshal
+import io
+import _imp
+
+with io.FileIO(pyc_path, 'r') as pyc_file:
+    data = pyc_file.read()
+
+bytes_data = memoryview(data)[16:]
+code = marshal.loads(bytes_data)
+if isinstance(code, _code_type):  # _code_type是任意一个python函数的__code__字段的值
+    if source_path is not None:
+        _imp._fix_co_filename(code, source_path)
+    return code
+```
+
+去掉了hash pyc逻辑的简化代码如下：
+
+```python
+class SourceFileLoader:
+    def get_code(self, fullname):
+        source_path = self.get_filename(fullname)
+        source_mtime = None
+        source_bytes = None
+        try:
+            bytecode_path = cache_from_source(source_path)
+        except NotImplementedError:
+            bytecode_path = None
+        else:
+            try:
+                st = self.path_stats(source_path)
+            except OSError:
+                pass
+            else:
+                source_mtime = int(st['mtime'])
+                try:
+                    data = self.get_data(bytecode_path)
+                except OSError:
+                    pass
+                else:
+                    exc_details = {
+                        'name': fullname,
+                        'path': bytecode_path,
+                    }
+                    try:
+                        bytes_data = memoryview(data)[16:]
+                        _validate_timestamp_pyc(data, source_mtime, st['size'], fullname, exc_details)
+                    except (ImportError, EOFError):
+                        pass
+                    else:
+                        return _compile_bytecode(
+                            bytes_data,
+                            name=fullname,
+                            bytecode_path=bytecode_path,
+                            source_path=source_path
+                        )
+        if source_bytes is None:
+            source_bytes = self.get_data(source_path)
+        code_object = self.source_to_code(source_bytes, source_path)
+        if not sys.dont_write_bytecode and bytecode_path is not None and source_mtime is not None:
+            data = _code_to_timestamp_pyc(code_object, source_mtime, len(source_bytes))
+            self._cache_bytecode(source_path, bytecode_path, data)
+        return code_object
+```
+
 ### SourceLessFileLoader
 
+这个相对于SourceFileLoader就简单很多了，首先因为没有源码，所以override了`get_source`函数返回None。
+
+`get_code`函数是实现也很简单，调用`_classify_pyc`判断pyc文件的合法性，然后还是调用`_compile_bytecode`来得到code对象。
+
 ### ExtensionFileLoader
+
+这个Loader要加载pyd，只能使用`_imp`模块中的c函数来完成，简化后的代码如下面所示：
+
+```python
+class ExtensionFileLoader:
+    def create_module(self, spec):
+        return _imp.create_dynamic(spec)
+
+    def exec_module(self, module):
+        _imp.exec_dynamic(module)
+
+    def is_package(self, fullname):
+        file_name = os.path.basename(self.path)
+        return any(file_name == '__init__' + suffix for suffix in EXTENSION_SUFFIXES)
+
+    def get_code(self, fullname):
+        return None
+
+    def get_filename(self, fullname):
+        return None
+```
