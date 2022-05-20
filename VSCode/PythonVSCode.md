@@ -120,6 +120,17 @@ debugpy.wait_for_client()  # 不需要等待客户端连接可以把这行注释
 }
 ```
 
+保存时使用autopep8自动格式化：
+
+```json
+{
+    "[python]": {
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "ms-python.python"
+    },
+}
+```
+
 ## extension.json
 
 ```json
