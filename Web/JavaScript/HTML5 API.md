@@ -219,11 +219,58 @@ this.video.addEventListener('pause', this.togglePlayIcon.bind(this));
     }
 ```
 
+## AudioElement
+
+AudioElement用于处理音频。需要像下面这样定义一个audio:
+
+```html
+<audio src="music/Gunjou.mp3" id="audio"></audio>
+```
+
+audio标签的element的类型为`HTMLAudioElement`。
+
+可监听事件：
+
+- timeupdate: 视频播放过程中时间更新，可用于更新进度条、显示时间戳之类的
+- play: 播放事件
+- pause: 暂停事件
+
+### 音频相关操作
+
+比较简单，直接看代码即可：
+
+```js
+    playCurrentSong() {
+        this.musicContainer.classList.add('play');
+        this.playButton.querySelector('i.fas').classList.remove('fa-play');
+        this.playButton.querySelector('i.fas').classList.add('fa-pause');
+
+        this.audioElement.play();
+    }
+
+    pauseCurrentSong() {
+        this.musicContainer.classList.remove('play');
+        this.playButton.querySelector('i.fas').classList.add('fa-play');
+        this.playButton.querySelector('i.fas').classList.remove('fa-pause');
+
+        this.audioElement.pause();
+    }
+
+    /**
+     *
+     * @param {PointerEvent} event
+     */
+    setProgress(event) {
+        const clickX = event.offsetX;
+        this.audioElement.currentTime = (clickX / this.progressContainer.clientWidth) * this.audioElement.duration;
+    }
+```
+
 ## 动态创建Element
 
 ```js
 /** @type {HTMLDivElement} */
-divElement = document.createElement('div');
+const divElement = document.createElement('div');
 /** add element to parent */
 parentElement.appendChild(divElement);
 
@@ -406,4 +453,161 @@ element.classList.add('b');
 
 ```js
 element.classList.toggle('c');
+```
+
+## draggable element
+
+通过html可以直接定义某个element是可以拖拽的：
+
+```html
+<div draggable="true"></div>
+```
+
+如果可以拿到element的实例，也可以通过：
+
+```js
+element.setAttribute('draggable', 'true');
+```
+
+或者：
+
+```js
+element.draggable = true;
+```
+
+来完成。
+
+## drag drop event
+
+和darg drop相关的事件有：
+
+- dragstart
+- dragend
+- dragenter
+- dragleave
+- drop
+
+事件参数类型都是DragEvent。
+
+## 语音识别Speech recognition
+
+[mdn doc](https://developer.mozilla.org/zh-CN/docs/Web/API/Web_Speech_API/Using_the_Web_Speech_API)
+
+对于 Web Speech API speech recognition(语音识别)的支持，在各浏览器中还不成熟，还在发展，为了支持多个浏览器，其核心类的代码应当这样写：
+
+```js
+window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
+window.SpeechGrammarList = window.SpeechGrammarList || window.webkitSpeechGrammarList
+window.SpeechRecognitionEvent = window.SpeechRecognitionEvent || window.webkitSpeechRecognitionEvent
+```
+
+chrome上目前都是带webkit前缀的。
+
+实例化语音识别器：
+
+```js
+let recognition = new window.SpeechRecognition();
+//recognition.continuous = false;
+recognition.lang = 'en-US';
+recognition.interimResults = false;
+recognition.maxAlternatives = 1;
+```
+
+识别语法：
+
+```js
+let colors = [ 'aqua' , 'azure' , 'beige', 'bisque', 'black', 'blue', 'brown', 'chocolate', 'coral' ... ];
+let grammar = '#JSGF V1.0; grammar colors; public <color> = ' + colors.join(' | ') + ' ;';
+let speechRecognitionList = new window.SpeechGrammarList();
+speechRecognitionList.addFromString(grammar, 1);  // 第二个参数是权重，范围0 - 1
+recognition.grammars = speechRecognitionList;
+```
+
+语法格式使用的是 [JSpeech Grammar Format](https://www.w3.org/TR/jsgf/) (JSGF)
+
+开始语音识别：
+
+```js
+/**
+ * Capture user speak
+ * @param {SpeechRecognitionEvent} e
+ */
+function onSpeak(e) {
+    /** @type {SpeechRecognitionResultList} */
+    const resultList = e.results;
+    /** @type {SpeechRecognitionResult} */
+    const result = resultList[0];
+    /** @type {SpeechRecognitionAlternative} */
+    const alternative = result[0];
+    const msg = alternative.transcript;  // 拿到语音对应的string
+}
+
+recognition.addEventListener('result', onSpeak);
+recognition.start();
+```
+
+停止语音识别：
+
+```js
+recognition.stop();
+```
+
+recognition可使用的事件：
+
+- result: 语音结果
+- end: 语音结束
+
+## 语音合成Speech synthesis
+
+[mdn doc](https://developer.mozilla.org/zh-CN/docs/Web/API/Web_Speech_API/Using_the_Web_Speech_API#speech_synthesis)
+
+语音合成即文字转语音。
+
+可以通过下面的方式，拿到当前系统支持的声音列表：
+
+```js
+    constructor() {
+        /** @type {Array<SpeechSynthesisVoice>} */
+        this.voices = [];
+        this.populateVoiceList();
+        if (window.speechSynthesis.onvoiceschanged !== undefined) {
+            window.speechSynthesis.addEventListener('voiceschanged', this.populateVoiceList.bind(this));
+        }
+    }
+
+    populateVoiceList() {
+        const voices = window.speechSynthesis.getVoices();
+        for (const voice of voices) {
+            if (this.voices.includes(voice)) {
+                continue;
+            }
+            this.voices.push(voice);
+            const optionElement = document.createElement('option');
+            optionElement.value = voice.name;
+            if (voice.default) {
+                optionElement.defaultSelected = true;
+            }
+            optionElement.innerText = `${voice.name} (${voice.lang})`;
+            this.voiceSelect.appendChild(optionElement);
+        }
+    }
+```
+
+然后创建一个`SpeechSynthesisUtterance`实例，传入必要参数，即可合成声音：
+
+```js
+    handleReadText() {
+        const voiceName = this.voiceSelect.selectedOptions[0].value;
+        for (const voice of this.voices) {
+            if (voice.name !== voiceName) {
+                continue;
+            }
+            const utterance = new SpeechSynthesisUtterance(this.textarea.value);
+            utterance.voice = voice;
+            utterance.pitch = 0.5;  // 0.0 - 1.0
+            utterance.rate = 2.0;
+            window.speechSynthesis.speak(utterance);
+            return;
+        }
+    }
 ```
