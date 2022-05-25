@@ -112,9 +112,9 @@ CheckOptions:
   - key: readability-identifier-naming.VariableCase
     value: camelBack
   - key: readability-identifier-naming.ConstantCase
-    value: UPPER_CACE
+    value: UPPER_CASE
   - key: readability-identifier-naming.EnumConstantCase
-    value: UPPER_CACE
+    value: UPPER_CASE
   - key: readability-identifier-naming.IgnoreMainLikeFunctions
     value: 1
   - key: readability-redundant-member-init.IgnoreBaseInCopyConstructors
@@ -176,6 +176,7 @@ build/
 *.hpp text
 *.txt text
 *.md text
+*.json text
 LICENCE text
 .clang-format text
 .clang-tidy text
