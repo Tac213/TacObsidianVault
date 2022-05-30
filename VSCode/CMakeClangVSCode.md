@@ -56,10 +56,11 @@ CMake suite maintained and supported by Kitware (kitware.com/cmake).
 {
     "cmake.configureOnOpen": true,
     "cmake.generator": "Ninja",
+    "cmake.buildDirectory": "${workspaceFolder}/Build/${buildType}",
 }
 ```
 
-Configure完成后就会在项目的根目录增加一个build目录，编译生成的文件都会放到这个目录下，可以把这个目录放到`.gitignore`中。
+Configure完成后就会在项目的根目录增加一个Build目录，编译生成的文件都会放到这个目录下，可以把这个目录放到`.gitignore`中。Build目录的名字也可以自定义，详见上述settings。`${buildType}`表示当前编译的类型，比如Debug/Release等等。
 
 接着，继续`Ctrl + Shift + P`，输入`CMake: Select a Kit`，将编译器选为刚才下载的clang，如果在列表中没找到，也可以选择`[Scan for kits]`扫描编译器，等扫描完成后再重新选择。
 
