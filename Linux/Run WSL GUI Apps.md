@@ -21,3 +21,24 @@ echo xfce4-session > ~/.xsession
 ```
 
 然后保证windows端的VcXsrv Windows X Server有开启，就可以正常运行wsl上的gui app。
+
+## windows 11
+
+[参考文章](https://docs.microsoft.com/en-us/windows/wsl/tutorials/gui-apps)
+
+首先确保显卡驱动有安装，然后**管理员模式**进入powershell，执行下面的命令：
+
+```shell
+wsl --update
+wsl --shutdown
+```
+
+就是先将wsl更新到最新，再重启wsl。
+
+接着重启wsl即可，可以随意运行wsl上的gui app。
+
+运行之前最好先执行下面的命令：
+
+```shell
+sudo apt update
+```
