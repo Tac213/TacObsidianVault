@@ -290,3 +290,5 @@ extern IApplication* const G_APPLICATION = new Application(CONFIG);
 #endif
 }  // namespace Tamashii
 ```
+
+注意windows.h和windowsx.h是不需要find_library的，windows下编译好的llvm会带有这2个头文件，在clang64/include这个目录下能找到。
