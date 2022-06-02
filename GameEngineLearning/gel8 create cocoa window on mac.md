@@ -1,3 +1,5 @@
+[参考文章](https://zhuanlan.zhihu.com/p/31003710)
+
 为了有良好的写代码体验，可以先设置好编译配置。
 
 首先因为cocoa使用objective-c进行编写，程序存在c / c++ / objective-c混合编译，为了支持混合编译，首先应该在根目录的CMakeLists.txt中增加编译选项：
