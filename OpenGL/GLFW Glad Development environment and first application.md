@@ -173,3 +173,7 @@ int main() {
     return 0;
 }
 ```
+
+note:
+
+- `glViewport`中的数据会被用于[[Viewport transformation]]
