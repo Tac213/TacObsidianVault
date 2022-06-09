@@ -59,6 +59,8 @@ vec4 result = vec4(vect, 0.0, 0.0);
 vec4 otherResult = vec4(result.xyz, 1.0);
 ```
 
+matrix的类型类似vector，把vec改成mat即可。
+
 ## 输入和输出
 
 vertex shader至少需要有gl_Position作为输出类型为vec4，fragment shader至少需要有FragColor作为输出类型为vec4。
@@ -99,6 +101,41 @@ if (vertexColorLoaction != -1) {
 - ui: unsigned int
 - fv: float vector
 
+## 常用内建函数
+
+- 最大值：`max(a, b)`
+- 乘方：`pow(a, 2.0)`
+- 点乘：`dot(a, b)`
+- 叉乘：`cross(a, b)`
+- 标准向量：`normalize(a)`
+- 向量长度：`length(someVector)`
+
+## shader struct
+
+glsl也可以定义结构体：
+
+```glsl
+#version 400 core
+
+struct Material {
+    vec3 ambient;
+    vec3 diffuse;
+    vec3 specular;
+    float shininess;
+}; 
+
+uniform Material material;
+```
+
+结构体类似于一个命名空间，可以通过下面的方式给结构体中的每一个分量赋值：
+
+```cpp
+lightingShader.setVec3("material.ambient",  1.0f, 0.5f, 0.31f);
+lightingShader.setVec3("material.diffuse",  1.0f, 0.5f, 0.31f);
+lightingShader.setVec3("material.specular", 0.5f, 0.5f, 0.5f);
+lightingShader.setFloat("material.shininess", 32.0f);
+```
+
 ## Shader类封装
 
 为了方便使用，可以将shader program封装为一个类，从文件中读取shader代码。
@@ -136,6 +173,9 @@ public:
     void setBool(const std::string& name, bool value) const;
     void setInt(const std::string& name, int value) const;
     void setFloat(const std::string& name, float value) const;
+    void setVec3(const std::string& name, const glm::vec3& value) const;
+    void setVec3(const std::string& name, float x, float y, float z) const;
+    void setMatrix(const std::string& name, const GLfloat* value) const;
 };
 ```
 
@@ -251,5 +291,29 @@ void Shader::setFloat(const std::string& name, float value) const {
         std::cerr << "WARNING::SHADER::UNIFORM_LOCATION_NOT_FOUND::" << name << std::endl;
     }
     glUniform1f(location, value);
+}
+
+void Shader::setVec3(const std::string& name, const glm::vec3& value) const {
+    int location = glGetUniformLocation(id, name.c_str());
+    if (location == -1) {
+        std::cerr << "WARNING::SHADER::UNIFORM_LOCATION_NOT_FOUND::" << name << std::endl;
+    }
+    glUniform3fv(location, 1, &value[0]);
+}
+
+void Shader::setVec3(const std::string& name, float x, float y, float z) const {
+    int location = glGetUniformLocation(id, name.c_str());
+    if (location == -1) {
+        std::cerr << "WARNING::SHADER::UNIFORM_LOCATION_NOT_FOUND::" << name << std::endl;
+    }
+    glUniform3f(location, x, y, z);
+}
+
+void Shader::setMatrix(const std::string& name, const GLfloat* value) const {
+    int location = glGetUniformLocation(id, name.c_str());
+    if (location == -1) {
+        std::cerr << "WARNING::SHADER::UNIFORM_LOCATION_NOT_FOUND::" << name << std::endl;
+    }
+    glUniformMatrix4fv(location, 1, GL_FALSE, value);
 }
 ```
