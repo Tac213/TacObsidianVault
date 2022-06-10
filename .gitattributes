@@ -6,7 +6,7 @@
 * text=auto
 # Explicitly declare text files you want to always be normalized and converted
 # to native line endings on checkout.
-*.md text
+*.md text eol=lf
 LICENCE text
 .gitattributes text
 .gitignore text

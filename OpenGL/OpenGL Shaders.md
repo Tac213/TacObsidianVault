@@ -136,6 +136,63 @@ lightingShader.setVec3("material.specular", 0.5f, 0.5f, 0.5f);
 lightingShader.setFloat("material.shininess", 32.0f);
 ```
 
+## macro
+
+glsl也可以定义宏：
+
+```glsl
+#define NR_POINT_LIGHTS 4
+```
+
+## array
+
+glsl也可以定义数组：
+
+```glsl
+uniform PointLight pointLights[NR_POINT_LIGHTS];
+```
+
+可以通过下面的方式给数组赋值：
+
+```cpp
+lightingShader.setVec3("pointLights[0].position", pointLightPositions[0]);
+lightingShader.setVec3("pointLights[0].ambient", 0.05f, 0.05f, 0.05f);
+lightingShader.setVec3("pointLights[0].diffuse", 0.8f, 0.8f, 0.8f);
+lightingShader.setVec3("pointLights[0].specular", 1.0f, 1.0f, 1.0f);
+lightingShader.setFloat("pointLights[0].constant", 1.0f);
+lightingShader.setFloat("pointLights[0].linear", 0.09f);
+lightingShader.setFloat("pointLights[0].quadratic", 0.032f);
+```
+
+# function
+
+glsl也可以定义函数，函数被调用前必须被声明，可以声明整个函数也可以只声明函数原型。
+
+声明函数原型：
+
+```glsl
+vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir);
+```
+
+定义函数：
+
+```glsl
+vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir)
+{
+    vec3 lightDir = normalize(-light.direction);
+    // diffuse shading
+    float diff = max(dot(normal, lightDir), 0.0);
+    // specular shading
+    vec3 reflectDir = reflect(-lightDir, normal);
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
+    // combine results
+    vec3 ambient = light.ambient * vec3(texture(material.diffuse, TexCoords));
+    vec3 diffuse = light.diffuse * diff * vec3(texture(material.diffuse, TexCoords));
+    vec3 specular = light.specular * spec * vec3(texture(material.specular, TexCoords));
+    return (ambient + diffuse + specular);
+}
+```
+
 ## Shader类封装
 
 为了方便使用，可以将shader program封装为一个类，从文件中读取shader代码。
