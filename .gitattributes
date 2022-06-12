@@ -1,7 +1,7 @@
 # image files
-*.png filter=lfs diff=lfs merge=lfs -text
-*.jpg filter=lfs diff=lfs merge=lfs -text
-*.gif filter=lfs diff=lfs merge=lfs -text
+*.png filter=lfs diff=lfs merge=lfs eol=lf -text
+*.jpg filter=lfs diff=lfs merge=lfs eol=lf -text
+*.gif filter=lfs diff=lfs merge=lfs eol=lf -text
 # Set the default behavior, in case people don't have core.autocrlf set.
 * text=auto
 # Explicitly declare text files you want to always be normalized and converted
