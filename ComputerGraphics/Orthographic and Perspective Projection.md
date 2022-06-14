@@ -94,6 +94,10 @@ $$\begin{pmatrix}x \\\ y \\\ f \\\ 1\end{pmatrix} => \begin{pmatrix}fx \\\ fy \\
 
 $$M_{persp->ortho} = \begin{pmatrix}n & 0 & 0 & 0 \\\ 0 & n & 0 & 0 \\\ 0 & 0 & n+f & -nf \\\ 0 & 0 & 0 & z\end{pmatrix}$$
 
+即：
+
+$$M_{persp->ortho} = \begin{pmatrix}\frac n z & 0 & 0 & 0 \\\ 0 & \frac n z & 0 & 0 \\\ 0 & 0 & \frac {n+f}{z} & \frac {-nf}{z} \\\ 0 & 0 & 0 & 1\end{pmatrix}$$
+
 结合正交投影，有：
 
 $$M_{persp} = M_{ortho} \times M_{persp->ortho}$$
