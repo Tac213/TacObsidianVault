@@ -159,6 +159,7 @@ sudo apt-get install libxrandr-dev
 sudo apt-get install libxinerama-dev
 sudo apt-get install libx11-xcb-dev
 sudo apt-get install libxcursor-dev
+sudo apt-get install libxi-dev
 ```
 
 然后在cmake里找到vulkan，并配置好glm和glfw即可。
