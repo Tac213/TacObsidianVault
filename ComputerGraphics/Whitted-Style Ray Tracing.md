@@ -5,3 +5,5 @@
 primary ray和物体的交点，可能存在反射或者折射的光线secondary ray，对于secondary ray，递归地做primary ray的计算，如果通过secondary ray也能计算出新的着色，则用secondary ray的着色加上primary ray的着色。
 
 像素的最终着色等于primary ray的着色加上所有secondary ray的着色。
+
+需要注意，在Whitted-Style Ray Tracing中，当光线打到Specular点上才会反射或折射，一旦达到漫反射点上，光线就会停止。

@@ -19,7 +19,7 @@
 
 在计算某一个(u, v)位置的法线位置时，通常通过梯度的方法：u方向加一个像素的改变量为$dp_u$，v方向上加一个像素的改变量为$dp_v$，那么该点的法向量：
 
-$$\vec n = (-\frac {dp_u}{du}, -\frac {dp_v}{dv}, 1).normalized()$$
+$$\vec n = (-\frac {\mathrm dp_u}{\mathrm du}, -\frac {\mathrm dp_v}{\mathrm dv}, 1).normalized()$$
 
 计算时是在原本法向量坐标为$(0, 0, 1)$这一局部坐标系下，计算完成后要转换回世界坐标系。
 

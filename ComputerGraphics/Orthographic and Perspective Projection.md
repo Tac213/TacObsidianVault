@@ -122,11 +122,11 @@ $$q(z) = o(z) - p(z) = z + \frac {nf}{z} - n - f$$
 
 求$q$的导数，有：
 
-$$q'(z) = 1 - \frac {nf}{z^2}$$
+$$q^\prime(z) = 1 - \frac {nf}{z^2}$$
 
-- $q'(f) = 1 - \frac {n}{f} > 0$
-- $q'(-\sqrt {nf}) = 1 - 1 = 0$
-- $q'(n) = 1 - \frac {f}{n} < 0$
+- $q^\prime(f) = 1 - \frac {n}{f} > 0$
+- $q^\prime(-\sqrt {nf}) = 1 - 1 = 0$
+- $q^\prime(n) = 1 - \frac {f}{n} < 0$
 
 所以在$[f, -\sqrt {nf}]$内$q$单调递增，在$[-\sqrt {nf}, n]$内$q$单调递减。
 

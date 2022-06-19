@@ -1,10 +1,10 @@
 根据[[Basic Radiometry#The Reflection Equation]]，我们知道某个点反射的光跟设想这个点的各个方向的光有关系，那么如果加上这个点本身的自发光Radiance，就可以得到渲染方程：
 
-$$L_o(p, \omega_o) = L_e(p, \omega_o) + \int _{\Omega^+} L_i(p, \omega_i) f_r(p, \omega_i, \omega_o) (n \cdot \omega_i) d\omega_i$$
+$$L_o(p, \omega_o) = L_e(p, \omega_o) + \int _{\Omega^+} L_i(p, \omega_i) f_r(p, \omega_i, \omega_o) (n \cdot \omega_i) \mathrm d\omega_i$$
 
 这个复杂的式子可以得到下面这个式子：
 
-$$l(u) = e(u) + \int l(v) K(u, v)dv$$
+$$l(u) = e(u) + \int l(v) K(u, v)\mathrm dv$$
 
 即u点的radiance等于u点的自发光加上所有v点的radiance与$K(u, v)dv$的乘积的积分，$K(u, v)dv$又称为Kernal of equation。
 
