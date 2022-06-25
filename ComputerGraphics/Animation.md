@@ -3,6 +3,7 @@
 在动画领域通常用点来表示导数，比如$x$表示举例，则：
 
 $$\dot x = v$$
+
 $$\ddot x = a$$
 
 ## Mass Spring System
@@ -47,6 +48,7 @@ $$\frac {\mathrm d x}{\mathrm d t} = \dot x = v(x, t)$$
 通常可以使用欧拉法来求解这个方程：
 
 $$x^{t + \Delta t} = x^t + \Delta t \dot x^t$$
+
 $$\dot x^{t + \Delta t} = \dot x^t + \Delta t \ddot x^t$$
 
 但是欧拉法非常不稳定：
@@ -64,12 +66,15 @@ $$\dot x^{t + \Delta t} = \dot x^t + \Delta t \ddot x^t$$
 这个方法的思路很简单，首先在$\Delta t$上求$x^{t + \Delta t}$，然后求$x$和$x^{t + \Delta t}$的中点$x_{mid}$，以$x_{mid}$的速度作为初始点的速度重新做欧拉算法。实际上就是用一个更能表示$\Delta t$时间内的平均速度来求位移。
 
 $$x_{mid} = x(t) + \frac {\Delta t} 2 v(x(t), t)$$
+
 $$x(t + \Delta t) = x(t) + \Delta t v(x_{mid}, t)$$
 
 将这个式子展开后：
 
 $$x^{t + \Delta t} = x^t + \frac {\Delta t} 2 (\dot x^t + \dot x^{t + \Delta t})$$
+
 $$\dot x^{t + \Delta t} = \dot x^t + \Delta t \ddot x^t$$
+
 $$x^{t + \Delta t} = x^t + \Delta t \dot x + \frac {(\Delta t)^2} 2 \ddot x^t$$
 
 可以发现，Modified Euler实际上就是在Euler method的基础上加了一个二次项。
@@ -91,6 +96,7 @@ $$x^{t + \Delta t} = x^t + \Delta t \dot x + \frac {(\Delta t)^2} 2 \ddot x^t$$
 隐式欧拉法实际上是在用$\Delta t$时刻的速度和加速度计算位移：
 
 $$x^{t + \Delta t} = x^t + \Delta t \dot x^{t + \Delta t}$$
+
 $$\dot x^{t + \Delta t} = \dot x^t + \Delta t \ddot x^{t + \Delta t}$$
 
 通常需要用牛顿法之类的方法求函数的零点。
@@ -100,16 +106,21 @@ $$\dot x^{t + \Delta t} = \dot x^t + \Delta t \ddot x^{t + \Delta t}$$
 初始定义：
 
 $$\frac {\mathrm d y}{\mathrm d t} = f(y, t)$$
+
 $$y(t_0) = y_0$$
 
 RK4的解：
 
 $$y_{n + 1} = y_n + \frac 1 6 h (k_1 + 2k_2 + 2k_3 + k_4)$$
+
 $$t_{n + 1} = t_n + h$$
 
 其中：
 
 $$k_1 = f(y_n, t_n)$$
+
 $$k_2 = f(y_n + h \frac {k_1} 2, t_n + \frac h 2)$$
+
 $$k_3 = f(y_n + h \frac {k_2} 2, t_n + \frac h 2)$$
+
 $$k_4 = f(y_n + hk_3, t_n + h)$$
