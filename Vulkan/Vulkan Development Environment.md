@@ -170,6 +170,15 @@ sudo apt-get install libxi-dev
 
 ```shell
 export VULKAN_SDK=/path/to/your/vulkan/sdk/macOS
+export VK_ADD_LAYER_PATH="$VULKAN_SDK/share/vulkan/explicit_layer.d"
+export VK_ICD_FILENAMES="$VULKAN_SDK/share/vulkan/icd.d/MoltenVK_icd.json"
+export VK_DRIVER_FILES="$VULKAN_SDK/share/vulkan/icd.d/MoltenVK_icd.json"
 ```
 
-注意最后一定要加一个macOS。实际上实在这个macOS子目录下。
+注意`VULKAN_SDK`最后一定要加一个macOS。实际上是在这个macOS子目录下。
+
+然后cd到`VULKAN_SDK`的父目录，执行:
+
+```shell
+python3 install_vulkan.py
+```
