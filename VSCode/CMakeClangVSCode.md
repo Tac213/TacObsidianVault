@@ -104,6 +104,34 @@ sudo apt install cmake
 sudo apt install ninja-build
 ```
 
+或者按照[这里的指引](https://apt.llvm.org/):
+
+```shell
+wget https://apt.llvm.org/llvm.sh
+chmod +x llvm.sh
+sudo ./llvm.sh <version number> all
+```
+
+`<version number>`传13就可以了。
+
+装好后增加别名方便使用：
+
+```shell
+alias clang='clang-13'
+alias clang++='clang++-13'
+alias clangd='clangd-13'
+alias clang-tidy='clang-tidy-13'
+alias clang-format='clang-format-13'
+```
+
+另外最好再升级一下gcc，将C++的include升级:
+
+```shell
+sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
+sudo apt install gcc-11
+sudo apt install g++-11
+```
+
 如果是在WSL下开发，那么在安装拓展时应当把拓展安装到WSL上。
 
 ## Mac

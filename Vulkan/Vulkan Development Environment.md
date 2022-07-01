@@ -162,6 +162,12 @@ sudo apt-get install libxcursor-dev
 sudo apt-get install libxi-dev
 ```
 
+安装必要驱动：
+
+```shell
+sudo apt install mesa-vulkan-drivers
+```
+
 然后在cmake里找到vulkan，并配置好glm和glfw即可。
 
 ## MacOS
