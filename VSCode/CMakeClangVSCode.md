@@ -132,6 +132,17 @@ sudo apt install gcc-11
 sudo apt install g++-11
 ```
 
+cmake可以按照如下办法更新：
+
+```shell
+python3 -m pip install -U cmake==3.22.5
+# 安装完成后通常在~/.local/bin/cmake
+# 把原本的cmake删除
+sudo rm -rf /usr/bin/cmake
+# 链接新的cmake
+sudo ln -s /home/tac/.local/bin/cmake /usr/bin/cmake
+```
+
 如果是在WSL下开发，那么在安装拓展时应当把拓展安装到WSL上。
 
 ## Mac
