@@ -223,3 +223,63 @@ void Application::createTextureImage()
     vkFreeMemory(mLogicalDevice, stagingBufferMemory, nullptr);
 }
 ```
+
+## Image View
+
+在Vulkan中，访问Image需要通过Image View，在swapchain和framebuffer是这样，在texture中亦是如此。
+
+需要定义一个成员变量：
+
+```cpp
+VkImageView mTextureImageView;
+```
+
+然后定义一个新的函数返回`VkImageView`，在`createImageViews`和`createTextureImageView`中都使用这个函数来创建`VkImageView`:
+
+```cpp
+VkImageView Application::createImageView(VkImage image, VkFormat format)
+{
+    VkImageViewCreateInfo viewInfo {};
+    viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+    viewInfo.image = image;
+    viewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
+    viewInfo.format = format;
+
+    viewInfo.components.r = VK_COMPONENT_SWIZZLE_IDENTITY;
+    viewInfo.components.g = VK_COMPONENT_SWIZZLE_IDENTITY;
+    viewInfo.components.b = VK_COMPONENT_SWIZZLE_IDENTITY;
+    viewInfo.components.a = VK_COMPONENT_SWIZZLE_IDENTITY;
+
+    viewInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+    viewInfo.subresourceRange.baseMipLevel = 0;
+    viewInfo.subresourceRange.levelCount = 1;
+    viewInfo.subresourceRange.baseArrayLayer = 0;
+    viewInfo.subresourceRange.layerCount = 1;
+
+    VkImageView imageView;
+    if (vkCreateImageView(mLogicalDevice, &viewInfo, nullptr, &imageView) != VK_SUCCESS)
+    {
+        throw std::runtime_error("Failed to create image view");
+    }
+
+    return imageView;
+}
+```
+
+`createImageViews`和`createTextureImageView`函数都调用上面这个函数：
+
+```cpp
+void Application::createTextureImageView()
+{
+    mTextureImageView = createImageView(mTextureImage, VK_FORMAT_R8G8B8A8_SRGB);
+}
+
+void Application::createImageViews()
+{
+    mSwapchainImageViews.resize(mSwapchainImages.size());
+    for (size_t i = 0; i < mSwapchainImages.size(); i++)
+    {
+        mSwapchainImageViews[i] = createImageView(mSwapchainImages[i], mSwapchainImageFormat);
+    }
+}
+```
