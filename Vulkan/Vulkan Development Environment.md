@@ -168,6 +168,14 @@ sudo apt-get install libxi-dev
 sudo apt install mesa-vulkan-drivers
 ```
 
+如果是使用N卡的话，还需要下载N卡的对应驱动，如果是WSL则需要下载最新的显卡驱动，并参考[这个指引](https://docs.nvidia.com/cuda/wsl-user-guide/index.html)在wsl上安装cuda。不过截至2022.8.6安装后仍然不支持vulkan，需要等后续消息。
+
+注意cuda装完之后还需要配置一下路径：
+
+```shell
+export PATH=$PATH:/usr/local/cuda-11.x/bin
+```
+
 然后在cmake里找到vulkan，并配置好glm和glfw即可。
 
 ## MacOS
@@ -187,4 +195,10 @@ export VK_DRIVER_FILES="$VULKAN_SDK/share/vulkan/icd.d/MoltenVK_icd.json"
 
 ```shell
 python3 install_vulkan.py
+```
+
+任意系统vulkan安装完成后，可以通过下面的指令查看对应的cpu支持:
+
+```shell
+vulkaninfo | grep GPU
 ```
