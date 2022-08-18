@@ -17,7 +17,7 @@ tar -xf Python-3.10.6.tar.xz
 
 ```shell
 wget -c https://www.openssl.org/source/openssl-3.0.5.tar.gz
-tar -zxvf openssl-3.0.5.tar-gz
+tar -zxvf openssl-3.0.5.tar.gz
 cd openssl-3.0.5
 ./config --prefix=/usr/local/openssl
 make
@@ -39,11 +39,25 @@ sudo ln -sf /usr/local/openssl/bin/openssl /usr/bin/openssl
 最后添加路径至ld.so.conf并设置生效
 
 ```shell
-sudo sh -c "echo ''/usr/local/openssl/lib64' >> /etc/ld.so.conf"
+sudo sh -c "echo '/usr/local/openssl/lib64' >> /etc/ld.so.conf"
 sudo ldconfig -v
 ```
 
+设置完成后可以重新查看openssl version:
+
+```
+$ openssl version
+OpenSSL 3.0.5 5 Jul 2022 (Library: OpenSSL 3.0.5 5 Jul 2022)
+```
+
 ## 编译Python
+
+首先安装依赖:
+
+```shell
+sudo apt update
+sudo apt install build-essential checkinstall zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev libsqlite3-dev libbz2-dev
+```
 
 进入Python源码目录，修改`Module/Setup`文件，搜索`OPENSSL`，取消注释并改成下面这个样子：
 
