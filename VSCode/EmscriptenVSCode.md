@@ -6,7 +6,7 @@
 emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake
 ```
 
-有2种方式可以配置，一种是加到项目的`.vscode/cmake-kits.json`里，另一种是加到VSCode的个人设置，Windows位于`C:\Users\<user_name>\AppData\Local\CMakeTools\cmake-tools-kits.json`，增加一个如下配置即可：
+有2种方式可以配置，一种是加到项目的`.vscode/cmake-kits.json`里，另一种是加到VSCode的个人设置，Windows位于`C:\Users\<user_name>\AppData\Local\CMakeTools\cmake-tools-kits.json`，Mac位于`/Users/<user_name>/.local/share/CMakeTools/cmake-tools-kits.json`，Linux位于`/home/<user_name>/.local/share/CMakeTools/cmake-tools-kits.json`增加一个如下配置即可：
 
 ```json
 {
