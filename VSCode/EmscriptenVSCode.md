@@ -34,3 +34,17 @@ emsdk/upstream/emscripten/cache/sysroot
 ```
 
 缺点就是每次cmake configure之后要手撸一遍这个文件。后续找到支持的方法再做更新。
+
+上面的这些问题，比较好的方法是通过CLion这个IDE来解决，CLion对于Emscripten的适配比VSCode当前的clangd插件要好(当然前提是要有JetBrains的LICENSE)。
+
+首先肯定还是要指定toolchain，在`Settings->Build, Execution, Development->Toolchains`界面中设定一个名为Emsciprten的路径，将C Compiler和C++ Compiler的路径分别设置为emcc和em++所在的路径。
+
+接着在`Settings->Build, Execution, Development->CMake`界面中，将Toolchain设置为刚才的Toolchain，并在CMake Options这一项中，增加下面这个编译选项：
+
+```
+-DCMAKE_TOOLCHAIN_FILE=/path/to/emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake
+```
+
+最后，最好设置一下Build directory，将它设置到一个会被git ignore而且最好和VSCode的构建路径不同的地方。
+
+另外，最好在CLion中配置一下保存自动clang-format。首先是在`Settings->Editor->Code Style`界面的最下方勾选Enable ClangFormat。然后在`Settings->Tools->Actions on Save`中勾选Reformat code。
