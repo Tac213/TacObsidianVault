@@ -33,9 +33,23 @@ emsdk/upstream/emscripten/cache/sysroot
 }
 ```
 
-缺点就是每次cmake configure之后要手撸一遍这个文件。后续找到支持的方法再做更新。
+缺点就是每次cmake configure之后要手撸一遍这个文件。比较好的方法是在根目录增加一个`.clangd`配置文件，增加如下内容([参考链接](https://github.com/clangd/vscode-clangd/issues/309)):
 
-上面的这些问题，比较好的方法是通过CLion这个IDE来解决，CLion对于Emscripten的适配比VSCode当前的clangd插件要好(当然前提是要有JetBrains的LICENSE)。
+```yaml
+CompileFlags:
+  Add:
+    [
+      "-D__EMSCRIPTEN__",
+      "-isysroot/path/to/emsdk/upstream/emscripten/cache/sysroot",
+      "-iwithsysroot/include/compat",
+      "-isystem/path/to/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1",
+      "-isystem/path/to/emsdk/upstream/emscripten/cache/sysroot/include",
+    ]
+```
+
+`.clangd`文件可配置内容[参考官方文档](https://clangd.llvm.org/config)。
+
+上面的这些问题，也可以通过CLion这个IDE来解决，CLion对于Emscripten的适配比VSCode当前的clangd插件要好(当然前提是要有JetBrains的LICENSE)。
 
 首先肯定还是要指定toolchain，在`Settings->Build, Execution, Development->Toolchains`界面中设定一个名为Emsciprten的路径，将C Compiler和C++ Compiler的路径分别设置为emcc和em++所在的路径。
 
