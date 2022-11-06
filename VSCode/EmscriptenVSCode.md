@@ -15,7 +15,7 @@ emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake
 }
 ```
 
-接着就可以正常使用cmake configure。
+接着就可以正常使用cmake configure。通过`CMake: Edit User-Local CMake Kits`也可以编辑该文件。
 
 emscripten有一个额外的sysroot，位于这个目录：
 

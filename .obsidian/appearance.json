@@ -6,5 +6,6 @@
   ],
   "baseFontSize": 16,
   "monospaceFontFamily": "Source Code Pro",
-  "translucency": false
+  "translucency": false,
+  "accentColor": ""
 }
