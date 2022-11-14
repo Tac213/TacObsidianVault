@@ -75,6 +75,7 @@ debugpy.wait_for_client()  # 不需要等待客户端连接可以把这行注释
 ```
 
 ## settings.json
+
 使用pep8格式化代码，flake8检测代码，和Pylance作为languageServer:
 
 ```json
@@ -139,5 +140,24 @@ debugpy.wait_for_client()  # 不需要等待客户端连接可以把这行注释
         "ms-python.python",
         "ms-python.vscode-pylance"
     ]
+}
+```
+
+## 使用pylint和yapf
+
+pylint是另一种linter，yapf则是另一种formatter，比起flake8和autopep8，有更多方便的配置，被大多数项目所使用。
+
+需要使用下面的配置来启用pylint和yapf(需要先安装这2个依赖)。
+
+```json
+{
+    "python.formatting.provider": "yapf",
+    "python.linting.flake8Enabled": false,
+    "python.linting.pylintEnabled": true,
+    "python.linting.enabled": true,
+    "[python]": {
+        "editor.formatOnSave": true
+    },
+    "python.analysis.typeCheckingMode": "off"
 }
 ```
