@@ -68,13 +68,30 @@ _ssl _ssl.c \
     -lssl -lcrypto
 ```
 
+也有可能是下面这样子的：
+
+```
+# OpenSSL bindings
+OPENSSL_INCLUDES=-I/usr/local/openssl/include
+OPENSSL_LDFLAGS=-lssl
+OPENSSL_LIBS=-L/usr/local/openssl/lib64
+_ssl _ssl.c $(OPENSSL_INCLUDES) $(OPENSSL_LDFLAGS) $(OPENSSL_LIBS)
+_hashlib _hashopenssl.c $(OPENSSL_INCLUDES) $(OPENSSL_LDFLAGS) -lcrypto
+```
+
 之前确认的openssl的目录结构就是为了让这里能写对。
 
 接下来就很简单了，配置并编译Python:
 
 ```shell
-./configure --enable-optimizations
+./configure --enable-optimizations --enable-shared  # enable-shared可以编译出libpython3.xm.so.1.0之类的shared library, 以便于用python开发的应用的打包, 比如PyInstaller打包Python开发的应用
 sudo make install
+```
+
+注意如果用`--enable-shared`选项的话，会编译出shared library，通常会在`/usr/local/lib`目录下，会根据编译时配置的prefix的不同而不同，默认是这个路径。需要把这个目录加到环境变量里面，否则python无法启动：
+
+```bash
+export LD_LIBRARY_PATH=/lib:/usr/lib:/usr/local/lib
 ```
 
 这样就ok了，如果不详替代原本的python，可以用下面的命令编译：

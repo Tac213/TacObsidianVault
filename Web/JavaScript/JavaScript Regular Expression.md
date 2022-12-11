@@ -43,7 +43,7 @@ i | ignore case, 忽略大小写
 s | dot all, .代表所有字符, 没有这个flag时.只能代表除`\n`, `\r` 之外的其他字符
 d | has indices, 如果匹配结果是否包含匹配位置的下标
 m | multi line, 是否识别多行字符串
-y | sticky, 是否从[lastIndex](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/lastIndex)开始识别
+y | sticky, 是否从[lastIndex](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/lastIndex)开始识别，而且下一个匹配必须从lastIndex开始
 u | unicode, 是否识别unicode, [unicode参考文章](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions/Unicode_Property_Escapes)
 
 ## Character classes

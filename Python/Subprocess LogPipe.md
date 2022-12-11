@@ -41,7 +41,11 @@ class LogPipe(threading.Thread):
 if __name__ == '__main__':
     import subprocess
     print('start')
-    with subprocess.Popen('ping www.google.com', stdout=LogPipe(), stderr=LogPipe(), shell=True) as p:
+    stdout = LogPipe()
+    stderr = LogPipe()
+    with subprocess.Popen('ping www.google.com', stdout=stdout, stderr=stderr, shell=True) as p:
         p.wait()
+        stdout.close()
+        stderr.close()
     print('end')
 ```
